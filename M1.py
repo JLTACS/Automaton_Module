@@ -59,7 +59,9 @@ def postfixNotation(regExp):
 
 def addConcatOp(regExp, chars):
     endOfExp = False
-    for i in range(len(regExp)): 
+    i = 0
+    size = len(regExp)
+    while(i < size): 
         if(i != (len(regExp) - 1) and (regExp[i] in chars or regExp[i] in ('*', '+'))):
             if(regExp[i+1] in chars):
                 regExp = insertInTheMiddle(regExp, '$', i+1)
@@ -77,6 +79,8 @@ def addConcatOp(regExp, chars):
                         break
                 if(not endOfExp):
                     regExp = insertInTheMiddle(regExp, '$', cont)
+        i+=1;
+        size = len(regExp)
     return regExp
             
 
@@ -106,4 +110,4 @@ def printPostfix(root,s):
         s = printPostfix(root.right,s)
     return s + root.data
 
-print(printPostfix(postfixNotation('hscripts&+'), ''))
+print(printPostfix(postfixNotation('ab,cd'), ''))
