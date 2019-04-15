@@ -79,7 +79,7 @@ def addConcatOp(regExp, chars):
                         break
                 if(not endOfExp):
                     regExp = insertInTheMiddle(regExp, '$', cont)
-        i+=1;
+        i+=1
         size = len(regExp)
     return regExp
             

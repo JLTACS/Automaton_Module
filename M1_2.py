@@ -25,17 +25,19 @@ def postfixNotation(regExp):
     while(len(stack) != 0):
         result += stack.pop()    
     return result
-
+            
 def addConcatOp(regExp, chars):
     endOfExp = False
-    for i in range(len(regExp)): 
+    i = 0
+    size = len(regExp)
+    while(i < size): 
+        endOfExp = False
         if(i != (len(regExp) - 1) and (regExp[i] in chars or regExp[i] in ('*', '+'))):
             if(regExp[i+1] in chars):
                 regExp = insertInTheMiddle(regExp, '$', i+1)
             elif(regExp[i+1] == '('):
                 regExp = insertInTheMiddle(regExp, '$', i+1)
             elif(regExp[i+1] == ')' and (i+2) < len(regExp)):
-                endOfExp = False
                 cont = i+2
                 while(regExp[cont] != '(' and regExp[cont] not in chars):
                     if(regExp[cont] in ('*', '+', ',', '$')):
@@ -47,8 +49,9 @@ def addConcatOp(regExp, chars):
                         break
                 if(not endOfExp):
                     regExp = insertInTheMiddle(regExp, '$', cont)
+        i+=1
+        size = len(regExp)
     return regExp
-            
 
 def insertInTheMiddle(s, word, i):
     return s[:i] + word + s[i:]
