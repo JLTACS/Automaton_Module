@@ -1,3 +1,21 @@
+class Node:
+    def __init__(self, data, left, right, parent):
+        self.data = data
+        self.left = left
+        self.right = right
+        self.parent = parent
+
+def treeConverter(string,indice,parent = None):
+    N = Node(string[indice],None,None,parent)
+    if(string[indice] in ('$',',')):
+        newInd, N.right = treeConverter(string, indice-1,N) 
+        newInd, N.left = treeConverter(string, newInd, N)
+    elif(string[indice] in ('*','+')):
+        newInd, N.right = treeConverter(string, indice-1,N)
+    else:
+        return (indice-1), N
+    return newInd, N 
+
 def postfixNotation(regExp):
     alphabet = createAcceptedChars()
     regExp = addConcatOp(regExp, alphabet)
@@ -72,11 +90,14 @@ def operatorValue(op):
     }
     return switcher.get(op,-1)
 
-def printPostfix(root,s):
+def printPostfix(root,space):
+    print(space + root.data)
     if(root.left != None):
-        s = printPostfix(root.left,s)
+        printPostfix(root.left,space + "  ")
     if(root.right != None):
-        s = printPostfix(root.right,s)
-    return s + root.data
+        printPostfix(root.right,space + "  ")
 
-print(postfixNotation('hscripts&+'))
+postF = postfixNotation('hscripts&+\n')
+print(postF)
+ind, root = treeConverter(postF,len(postF)-1)
+printPostfix(root,"")
