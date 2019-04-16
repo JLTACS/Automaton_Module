@@ -1,20 +1,10 @@
-class Node:
-    def __init__(self, data, left, right, parent):
-        self.data = data
-        self.left = left
-        self.right = right
-        self.parent = parent
+""" Authors: Jose Luis Torrentera Arroniz
+             Omar Antonio Madriz Almanza
+    Module 1: Given a infix notation regular expression
+              and transforms it into postfix notation.
+    In: Regular Expression
+    Out: Postfix notation Regular Expression """
 
-def treeConverter(string,indice,parent = None):
-    N = Node(string[indice],None,None,parent)
-    if(string[indice] in ('$',',')):
-        newInd, N.right = treeConverter(string, indice-1,N) 
-        newInd, N.left = treeConverter(string, newInd, N)
-    elif(string[indice] in ('*','+')):
-        newInd, N.right = treeConverter(string, indice-1,N)
-    else:
-        return (indice-1), N
-    return newInd, N 
 
 def postfixNotation(regExp):
     alphabet = createAcceptedChars()
@@ -43,7 +33,28 @@ def postfixNotation(regExp):
     while(len(stack) != 0):
         result += stack.pop()    
     return result
+
+class Node:
+    def __init__(self, data, left, right, parent):
+        self.data = data
+        self.left = left
+        self.right = right
+        self.parent = parent
+
+""" Constructs the tree representation of an postfix notation
+    regular expression.  """
+def treeConverter(string,index,parent = None):
+    N = Node(string[index],None,None,parent)
+    if(string[index] in ('$',',')):
+        newInd, N.right = treeConverter(string, index-1,N) 
+        newInd, N.left = treeConverter(string, newInd, N)
+    elif(string[index] in ('*','+')):
+        newInd, N.right = treeConverter(string, index-1,N)
+    else:
+        return (index-1), N
+    return newInd, N 
             
+""" Set '$' as a concatenation operator """
 def addConcatOp(regExp, chars):
     endOfExp = False
     i = 0
@@ -74,6 +85,7 @@ def addConcatOp(regExp, chars):
 def insertInTheMiddle(s, word, i):
     return s[:i] + word + s[i:]
 
+""" Sets the Alphabet """
 def createAcceptedChars():
     chars = [chr(i) for i in range(ord('A'),  ord('Z') + 1)]
     chars += [chr(i) for i in range(ord('a'), ord('z') + 1)]
@@ -81,6 +93,7 @@ def createAcceptedChars():
     chars += ['\n', ' ', 'á', 'é', 'í', 'ó', 'ú', '&']
     return chars
 
+""" Sets Operators priority """
 def operatorValue(op):
     switcher = {
         '*':1,
@@ -97,7 +110,7 @@ def printPostfix(root,space):
     if(root.right != None):
         printPostfix(root.right,space + "  ")
 
-postF = postfixNotation('hscripts&+\n')
+postF = postfixNotation('hscripts&+')
 print(postF)
 ind, root = treeConverter(postF,len(postF)-1)
 printPostfix(root,"")
