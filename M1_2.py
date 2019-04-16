@@ -1,9 +1,9 @@
 """ Authors: Jose Luis Torrentera Arroniz
              Omar Antonio Madriz Almanza
-    Module 1: Given a infix notation regular expression
+    Module 1: Given a regular expression written in infix notation
               and transforms it into postfix notation.
-    In: Regular Expression
-    Out: Postfix notation Regular Expression """
+    In: Regular Expression in infix notation
+    Out: Regular Expression in postfix notation  """
 
 
 def postfixNotation(regExp):
@@ -33,26 +33,6 @@ def postfixNotation(regExp):
     while(len(stack) != 0):
         result += stack.pop()    
     return result
-
-class Node:
-    def __init__(self, data, left, right, parent):
-        self.data = data
-        self.left = left
-        self.right = right
-        self.parent = parent
-
-""" Constructs the tree representation of an postfix notation
-    regular expression.  """
-def treeConverter(string,index,parent = None):
-    N = Node(string[index],None,None,parent)
-    if(string[index] in ('$',',')):
-        newInd, N.right = treeConverter(string, index-1,N) 
-        newInd, N.left = treeConverter(string, newInd, N)
-    elif(string[index] in ('*','+')):
-        newInd, N.right = treeConverter(string, index-1,N)
-    else:
-        return (index-1), N
-    return newInd, N 
             
 """ Set '$' as a concatenation operator """
 def addConcatOp(regExp, chars):
@@ -103,14 +83,6 @@ def operatorValue(op):
     }
     return switcher.get(op,-1)
 
-def printPostfix(root,space):
-    print(space + root.data)
-    if(root.left != None):
-        printPostfix(root.left,space + "  ")
-    if(root.right != None):
-        printPostfix(root.right,space + "  ")
-
 postF = postfixNotation('hscripts&+')
 print(postF)
-ind, root = treeConverter(postF,len(postF)-1)
-printPostfix(root,"")
+
