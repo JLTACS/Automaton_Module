@@ -57,6 +57,8 @@ def regularExpressionToDFA_e(regExp):
     currState = init_state
     nextState = final_state
     finish = False
+    NodeStack = []
+    StateStack = []
 
     while(not finish):
         op = currNode.data
@@ -64,16 +66,28 @@ def regularExpressionToDFA_e(regExp):
             if(currNode.left.data not in operators and currNode.right.data not in operators):
                 transMatrix[currState].insert(alphabet[currNode.left.data],nextState)
                 transMatrix[currState].insert(alphabet[currNode.right.data],nextState)
+                if(len(NodeStack) != 0):
+                    currNode = NodeStack.pop()
+                    nextState = StateStack.pop()
+                else:
+                    finish = True
             elif(currNode.left.data not in operators):
                 transMatrix[currState].insert(alphabet[currNode.left.data],nextState)
                 currNode = currNode.right
             elif(currNode.right.data not in operators):
                 transMatrix[currState].insert(alphabet[currNode.right.data],nextState)
                 currNode = currNode.left
-        finish = True
+            else:
+                StateStack.append(nextState)
+                NodeStack.append(currNode.left)
+                currNode = currNode.right
+        elif(op == '$'):
+            pass
+        elif(op == '*'):
+            pass
+        elif(op == '+'):
+            pass
     print(transMatrix)    
 
-
-
-regularExpressionToDFA_e('ab,')
+regularExpressionToDFA_e('ab,cd,,')
 
