@@ -41,16 +41,53 @@ def create_alf_dict(str_alf):
         if(letter not in ('*', '+', ',', '$')):
             alf[letter] = n
             n += 1
+    alf[None] = n+1
     return alf
 
 def regularExpressionToDFA_e(regExp):
     init_state = 0
     final_state = 1
+    epsilon = None
     alphabet = create_alf_dict(regExp)
-    ind, treeRegExp = treeConverter(regExp,len(regExp)-1)
-    transMatrix = [[1 for i in range(len(alphabet))]]
-    transMatrix.append([])
-    print(transMatrix)
-regularExpressionToDFA_e('ab,')
+    operators = ['*', '+', ',', '$']
+    ind, RETreeRoot = treeConverter(regExp,len(regExp)-1)
+    transMatrix = [[],[]]
 
-    
+    currNode = RETreeRoot
+    currState = init_state
+    nextState = final_state
+    finish = False
+    NodeStack = []
+    StateStack = []
+
+    while(not finish):
+        op = currNode.data
+        if(op == ','):
+            if(currNode.left.data not in operators and currNode.right.data not in operators):
+                transMatrix[currState].insert(alphabet[currNode.left.data],nextState)
+                transMatrix[currState].insert(alphabet[currNode.right.data],nextState)
+                if(len(NodeStack) != 0):
+                    currNode = NodeStack.pop()
+                    nextState = StateStack.pop()
+                else:
+                    finish = True
+            elif(currNode.left.data not in operators):
+                transMatrix[currState].insert(alphabet[currNode.left.data],nextState)
+                currNode = currNode.right
+            elif(currNode.right.data not in operators):
+                transMatrix[currState].insert(alphabet[currNode.right.data],nextState)
+                currNode = currNode.left
+            else:
+                StateStack.append(nextState)
+                NodeStack.append(currNode.left)
+                currNode = currNode.right
+        elif(op == '$'):
+            pass
+        elif(op == '*'):
+            pass
+        elif(op == '+'):
+            pass
+    print(transMatrix)    
+
+regularExpressionToDFA_e('ab,cd,,')
+
