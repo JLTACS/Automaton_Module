@@ -1,7 +1,7 @@
 ##Minimize
 """ Authors: Jose Luis Torrentera Arroniz
              Omar Antonio Madriz Almanza
-    Module 4: Minimize DFA with equivalent States
+    Module 5: Minimize DFA with equivalent States
               In: DFA transition table, final states
               Out:  DFA transition table, final states """
 def getCombinations(elements):
@@ -41,27 +41,32 @@ def getEquivalentStates(oldTransition, oldFinal):
         if stop:
             break
     
-    #Checar que pasa cuando hay dos eliminaciones en medio
     possibleEqual.sort(reverse = True)
+    eliminated = set()
     for eq in possibleEqual:
+        eliminated.add(eq[1])
         if eq[1] < len(oldTransition):
             for st in range(len(oldTransition)):
                 temp = [x if x != eq[1] else eq[0] for x in oldTransition[st]]
+                oldFinal = set([x if x != eq[1] else eq[0] for x in oldFinal])
                 oldTransition[st] = temp
+
+    eliminated = list(eliminated)
+    eliminated.sort(reverse = True)        
+    for el in eliminated:
+        for st in range(len(oldTransition)):
+            temp = [x-1 if x > el else x for x in oldTransition[st]]
+            oldTransition[st] = temp
             
-            for st in range(len(oldTransition)):
-                temp = [x-1 if x > eq[1] else x for x in oldTransition[st]]
-                oldTransition[st] = temp
-            
-            oldTransition.pop(eq[1])
+        oldTransition.pop(el)
+        oldFinal = set([x-1 if x > el else x for x in oldFinal])
     
-    #Checar que onda con los estados finales
-    return oldTransition
+    return oldTransition,oldFinal
     
 
 
-afd = [[1, 4], [2, 5], [7, 7], [7, 3], [5, 6], [7, 7], [7, 6],[7,7]]
-finals = {5,6,7}
+afd = [[1, 2], [1, 2], [3, 4], [5, 4], [1, 6], [5, 3], [6, 6]]
+finals = {0,1,5}
 
 
-getEquivalentStates(afd,finals)
+print(getEquivalentStates(afd,finals))
