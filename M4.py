@@ -1,6 +1,12 @@
 #Convertir de un AFN a un AFD
 #Posible modificación, omitir oldInitial, simplemente poner 0.
 #Posible modificación, checar el tipo de dato en la matriz de transición del AFN
+""" Authors: Jose Luis Torrentera Arroniz
+             Omar Antonio Madriz Almanza
+    Module 4: Transforms a Non-Deterministic Finite Automaton (NFA)
+              into a Deterministic Finite Automaton(DFA)
+              In: NFA transition table, final states
+              Out:  DFA transition table, final states """
 
 def afdConverter(oldTransition, oldInitial, oldFinal):
     newStates = {}
