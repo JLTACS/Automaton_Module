@@ -1,9 +1,9 @@
 """ Authors: Jose Luis Torrentera Arroniz
              Omar Antonio Madriz Almanza
     Module 2: Transforms a regular expression in postfix 
-              notation into a Deterministic Finite Automaton (DFA-e)
+              notation into a Non Deterministic Finite Automaton (NFA-e)
               In: Regular expression in Postfix notation.
-              Out: DFA-e transitions table  """ 
+              Out: NFA-e transitions table  """ 
 
 class Node:
     def __init__(self, data, left, right, parent):
