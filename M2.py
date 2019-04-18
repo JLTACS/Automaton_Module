@@ -56,24 +56,19 @@ def regularExpressionToDFA_e(regExp):
     currNode = RETreeRoot
     currState = init_state
     nextState = final_state
-    isleave = False
     NodeStack = []
-    StateStack = []
+    OpStack = []
 
     while(1):
-        if(isleave):
-            if(len(NodeStack) != 0):
-                currNode = NodeStack.pop()
-                nextState = StateStack.pop()
-            else:
-                break
-        op = currNode.data
-        isleave = False
+        if(currNode.data not in alphabet):
+            op = currNode.data
+        else:
+            if(len(OpStack) != 0): 
+                op = OpStack.pop()
         if(op == ','):
             if(currNode.left.data not in operators and currNode.right.data not in operators):
                 transMatrix[currState][alphabet[currNode.left.data]] = nextState
                 transMatrix[currState][alphabet[currNode.right.data]] = nextState
-                isleave = True
             elif(currNode.right.data not in operators):
                 transMatrix[currState][alphabet[currNode.right.data]] = nextState
                 currNode = currNode.left
@@ -81,39 +76,24 @@ def regularExpressionToDFA_e(regExp):
                 transMatrix[currState][alphabet[currNode.left.data]] = nextState
                 currNode = currNode.right
             else:
-                StateStack.append(nextState)
                 NodeStack.append(currNode.left)
                 currNode = currNode.right
         elif(op == '$'):
-            if(currNode.left.data not in operators and currNode.right.data not in operators):
-                transMatrix.append([None for i in range(len(alphabet))])
-                if(len(NodeStack) == 0):
-                    nextState = len(transMatrix) - 1
-                    transMatrix[currState][alphabet[currNode.left.data]] = nextState
-                    transMatrix[nextState][alphabet[currNode.right.data]] = final_state
-                else:
+            if(currNode.left == None and currNode.right == None):
+                if(len(NodeStack) != 0):
                     transMatrix.append([None for i in range(len(alphabet))])
-                    newState = len(transMatrix) - 2
-                    nextState = len(transMatrix) - 1
-                    transMatrix[currState][alphabet[currNode.left.data]] = newState
-                    transMatrix[newState][alphabet[currNode.right.data]] = nextState
-                currState = nextState
-                isleave = True
-            elif(currNode.left.data not in operators):
-                transMatrix.append([None for i in range(len(alphabet))])
-                newState = len(transMatrix) - 1
-                transMatrix[currState][alphabet[currNode.left.data]] = newState
-                currState = newState
-                currNode = currNode.right
-            elif(currNode.right.data not in operators):
-                transMatrix.append([None for i in range(len(alphabet))])
-                newState = len(transMatrix) - 1
-                transMatrix[currState][alphabet[currNode.right.data]] = newState
-                currState = newState
-                currNode = currNode.left
+                    newState = final_state
+                    final_state = len(transMatrix) - 1
+                    transMatrix[currState][alphabet[currNode.data]] = newState
+                    currState = newState
+                    currNode = NodeStack.pop()
+                else:
+                    transMatrix[currState][alphabet[currNode.data]] = final_state
+                    currState = final_state
+                    break
             else:
-                StateStack.append(nextState)
                 NodeStack.append(currNode.right)
+                OpStack.append(currNode.data)
                 currNode = currNode.left
 
         elif(op == '*'):
@@ -121,14 +101,14 @@ def regularExpressionToDFA_e(regExp):
         elif(op == '+'):
             pass
     
-    printTransTable(transMatrix)    
+    printTransTable(transMatrix, alphabet)    
 
 def dropUnused(i):
     pass
 
-def printTransTable(Matrix):
+def printTransTable(Matrix, alphabet):
     for i in range(len(Matrix)):
         print(str(i) + str(Matrix[i]))
 
-regularExpressionToDFA_e('abc$,')
+regularExpressionToDFA_e('ab$cd$$')
 
