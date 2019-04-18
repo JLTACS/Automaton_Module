@@ -58,48 +58,45 @@ def regularExpressionToDFA_e(regExp):
     nextState = final_state
     NodeStack = []
     OpStack = []
+    leftLeave = False
+    finish = False
 
-    while(1):
+    while(not finish):
         if(currNode.data not in alphabet):
             op = currNode.data
+            leftLeave = False
         else:
-            if(len(OpStack) != 0): 
+            if(not leftLeave): 
                 op = OpStack.pop()
-        if(op == ','):
-            if(currNode.left.data not in operators and currNode.right.data not in operators):
-                transMatrix[currState][alphabet[currNode.left.data]] = nextState
-                transMatrix[currState][alphabet[currNode.right.data]] = nextState
-            elif(currNode.right.data not in operators):
-                transMatrix[currState][alphabet[currNode.right.data]] = nextState
-                currNode = currNode.left
-            elif(currNode.left.data not in operators):
-                transMatrix[currState][alphabet[currNode.left.data]] = nextState
-                currNode = currNode.right
-            else:
-                NodeStack.append(currNode.left)
-                currNode = currNode.right
-        elif(op == '$'):
-            if(currNode.left == None and currNode.right == None):
+            else:    
+                leftLeave = False
+        if(currNode.left == None and currNode.right == None):
+            if(op == ','):
+                transMatrix[currState][alphabet[currNode.data]] = nextState
+                currNode = NodeStack.pop()
+                leftLeave = True
+            elif(op == '$'):
                 if(len(NodeStack) != 0):
                     transMatrix.append([None for i in range(len(alphabet))])
                     newState = final_state
                     final_state = len(transMatrix) - 1
                     transMatrix[currState][alphabet[currNode.data]] = newState
                     currState = newState
+                    nextState = final_state
                     currNode = NodeStack.pop()
+                    leftLeave = True
                 else:
                     transMatrix[currState][alphabet[currNode.data]] = final_state
                     currState = final_state
-                    break
-            else:
-                NodeStack.append(currNode.right)
-                OpStack.append(currNode.data)
-                currNode = currNode.left
-
-        elif(op == '*'):
-            pass
-        elif(op == '+'):
-            pass
+                    finish = True
+            elif(op == '*'):
+                pass
+            elif(op == '+'):
+                pass
+        else:
+            NodeStack.append(currNode.right)
+            OpStack.append(currNode.data)
+            currNode = currNode.left    
     
     printTransTable(transMatrix, alphabet)    
 
@@ -110,5 +107,5 @@ def printTransTable(Matrix, alphabet):
     for i in range(len(Matrix)):
         print(str(i) + str(Matrix[i]))
 
-regularExpressionToDFA_e('ab$cd$$')
+regularExpressionToDFA_e('abc$,')
 
