@@ -66,7 +66,7 @@ def regularExpressionToDFA_e(regExp):
             op = currNode.data
             leftLeave = False
         else:
-            if(not leftLeave): 
+            if(not leftLeave or (len(OpStack) != 0 and OpStack[-1] == op)): 
                 op = OpStack.pop()
             else:    
                 leftLeave = False
@@ -78,16 +78,14 @@ def regularExpressionToDFA_e(regExp):
             elif(op == '$'):
                 if(len(NodeStack) != 0):
                     transMatrix.append([None for i in range(len(alphabet))])
-                    newState = final_state
-                    final_state = len(transMatrix) - 1
+                    newState = len(transMatrix) - 1
                     transMatrix[currState][alphabet[currNode.data]] = newState
                     currState = newState
-                    nextState = final_state
                     currNode = NodeStack.pop()
                     leftLeave = True
                 else:
-                    transMatrix[currState][alphabet[currNode.data]] = final_state
-                    currState = final_state
+                    transMatrix[currState][alphabet[currNode.data]] = nextState
+                    currState = nextState
                     finish = True
             elif(op == '*'):
                 pass
@@ -107,5 +105,5 @@ def printTransTable(Matrix, alphabet):
     for i in range(len(Matrix)):
         print(str(i) + str(Matrix[i]))
 
-regularExpressionToDFA_e('abc$,')
+regularExpressionToDFA_e('ab,c$')
 
