@@ -36,94 +36,64 @@ def printPostfix(root,space):
     to the accepted characters. """
 def create_alf_dict(str_alf):
     alf = {}
+    str_alf = set(str_alf)
     n = 0
     for letter in str_alf:
         if(letter not in ('*', '+', ',', '$')):
             alf[letter] = n
             n += 1
-    alf['eps'] = n+1
+    alf['eps'] = n
     return alf
 
-def regularExpressionToDFA_e(regExp):
+def regularExpressionToNFA_e(regExp):
     init_state = 0
     final_state = 1
     alphabet = create_alf_dict(regExp)
     ind, RETreeRoot = treeConverter(regExp,len(regExp)-1)
     dropUnused(ind)
-    transMatrix = [[None for i in range(len(alphabet))],[None for i in range(len(alphabet))]]
+    transMatrix = [[[None] for i in range(len(alphabet))],[[None] for i in range(len(alphabet))]]
 
-    currNode = RETreeRoot
-    currState = init_state
-    nextState = final_state
-    NodeStack = []
-    OpStack = []
-    StateQueue = []
-    leftLeave = False
-    finish = False
-    leave = False
+    createNFA(transMatrix, RETreeRoot, init_state, final_state, alphabet)
 
-    while(not finish):
-        if(currNode.data not in alphabet):
-            op = currNode.data
-            leave = False
-            leftLeave = False
-        else:
-            if(not leave):
-                leave = True
-            else:
-                op = OpStack.pop()
-        if(currNode.left == None and currNode.right == None):
-            if(op == ','):
-                if(not leftLeave):
-                    nextState = StateQueue.pop()
-                    transMatrix[currState][alphabet[currNode.data]] = nextState
-                    leftLeave = True
-                else: 
-                    transMatrix[currState][alphabet[currNode.data]] = nextState
-                    currState = nextState
-                if(len(NodeStack) != 0):
-                    currNode = NodeStack.pop()
-            elif(op == '$'):
-                nextState = StateQueue.pop()
-                if(not leftLeave):                 
-                    initialState = currState
-                    transMatrix[currState][alphabet[currNode.data]] = nextState
-                    currState = nextState   
-                    leftLeave = True
-                else:
-                    transMatrix[currState][alphabet[currNode.data]] = nextState
-                    if(len(NodeStack) > 0 and currNode.parent.parent.data == ','):
-                        currState = initialState
-                    else:
-                        currState = nextState
-                if(len(NodeStack) != 0):
-                    currNode = NodeStack.pop()
-            elif(op == '*'):
-                pass
-            elif(op == '+'):
-                pass
-        else:
-            if(op in ('$', '*')):
-                transMatrix.append([None for i in range(len(alphabet))])
-                newState = len(transMatrix) - 1
-                StateQueue.append(nextState)
-                nextState = newState
-            elif(op == ','):
-                StateQueue.append(nextState)                
-
-            NodeStack.append(currNode.right)
-            OpStack.append(currNode.data)
-            currNode = currNode.left    
-        if(currState == final_state or (len(NodeStack) == 0 and len(OpStack) == 0)):
-            finish = True
     printTransTable(transMatrix, alphabet)    
+
+def createNFA(transMatrix, currNode, currState, nextState, alphabet):
+    if(currNode == 'eps'):
+        if(None in transMatrix[currState][alphabet[currNode]]):
+            transMatrix[currState][alphabet[currNode]].remove(None)
+        transMatrix[currState][alphabet[currNode]].append(nextState)
+        return
+    elif(currNode.data in alphabet):
+        if(None in transMatrix[currState][alphabet[currNode.data]]):
+            transMatrix[currState][alphabet[currNode.data]].remove(None)
+        transMatrix[currState][alphabet[currNode.data]].append(nextState)
+        return
+    elif(currNode.data == '$'):
+        transMatrix.append([[None] for i in range(len(alphabet))])
+        createNFA(transMatrix, currNode.left, currState, len(transMatrix) - 1, alphabet)
+        createNFA(transMatrix, currNode.right, len(transMatrix) - 1, nextState, alphabet)
+    elif(currNode.data == ','):
+        createNFA(transMatrix, currNode.left, currState, nextState, alphabet)
+        createNFA(transMatrix, currNode.right, currState, nextState, alphabet)
+    elif(currNode.data == '*'):
+        transMatrix.append([[None] for i in range(len(alphabet))])
+        createNFA(transMatrix, 'eps', currState, len(transMatrix) - 1, alphabet)
+        createNFA(transMatrix, 'eps', len(transMatrix) - 1, nextState, alphabet)
+        createNFA(transMatrix, currNode.right, len(transMatrix) - 1, len(transMatrix) - 1, alphabet)
+    elif(currNode.data = '+'):
+        pass
 
 def dropUnused(i):
     pass
 
 def printTransTable(Matrix, alphabet):
+    keys = list(alphabet.keys())
+    title = "\t"
+    for k in keys:
+        title += k + '\t'
+    print(title)
     for i in range(len(Matrix)):
-        print(str(i) + str(Matrix[i]))
+        print(str(i) + '   ' + str(Matrix[i]))
 
-regularExpressionToDFA_e('abc$,')
+regularExpressionToNFA_e('ab,ab,c$$*')
 
