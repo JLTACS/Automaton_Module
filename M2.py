@@ -48,7 +48,6 @@ def regularExpressionToDFA_e(regExp):
     init_state = 0
     final_state = 1
     alphabet = create_alf_dict(regExp)
-    operators = ['*', '+', ',', '$']
     ind, RETreeRoot = treeConverter(regExp,len(regExp)-1)
     dropUnused(ind)
     transMatrix = [[None for i in range(len(alphabet))],[None for i in range(len(alphabet))]]
@@ -58,6 +57,7 @@ def regularExpressionToDFA_e(regExp):
     nextState = final_state
     NodeStack = []
     OpStack = []
+    StateQueue = []
     leftLeave = False
     finish = False
     leave = False
@@ -74,45 +74,43 @@ def regularExpressionToDFA_e(regExp):
                 op = OpStack.pop()
         if(currNode.left == None and currNode.right == None):
             if(op == ','):
-                transMatrix[currState][alphabet[currNode.data]] = nextState
+                if(not leftLeave):
+                    nextState = StateQueue.pop()
+                    transMatrix[currState][alphabet[currNode.data]] = nextState
+                    leftLeave = True
+                else: 
+                    transMatrix[currState][alphabet[currNode.data]] = nextState
+                    currState = nextState
                 if(len(NodeStack) != 0):
                     currNode = NodeStack.pop()
             elif(op == '$'):
-                if(len(NodeStack) != 0):
-                    if(not leftLeave):
-                        transMatrix.append([None for i in range(len(alphabet))])
-                        newState = len(transMatrix) - 1
-                        initialState = currState
-                        transMatrix[currState][alphabet[currNode.data]] = newState
-                        currState = newState
-                        leftLeave = True
-                    else:
-                        if(currNode.parent.parent.data == ','):
-                            transMatrix[currState][alphabet[currNode.data]] = nextState
-                            currState = initialState
-                        elif(currNode.parent.parent.data == '$'):
-                            transMatrix.append([None for i in range(len(alphabet))])
-                            newState = len(transMatrix) - 1
-                            initialState = currState
-                            transMatrix[currState][alphabet[currNode.data]] = newState
-                            currState = newState                                                   
-                    currNode = NodeStack.pop()
+                nextState = StateQueue.pop()
+                if(not leftLeave):                 
+                    initialState = currState
+                    transMatrix[currState][alphabet[currNode.data]] = nextState
+                    currState = nextState   
+                    leftLeave = True
                 else:
-                    if(not leftLeave):
-                        transMatrix.append([None for i in range(len(alphabet))])
-                        newState = len(transMatrix) - 1
-                        transMatrix[currState][alphabet[currNode.data]] = newState
-                        transMatrix[newState][alphabet[currNode.data]] = nextState
-                        currState = nextState
+                    transMatrix[currState][alphabet[currNode.data]] = nextState
+                    if(len(NodeStack) > 0 and currNode.parent.parent.data == ','):
+                        currState = initialState
                     else:
-                        transMatrix[currState][alphabet[currNode.data]] = nextState
                         currState = nextState
-                        leftLeave = False
+                if(len(NodeStack) != 0):
+                    currNode = NodeStack.pop()
             elif(op == '*'):
                 pass
             elif(op == '+'):
                 pass
         else:
+            if(op in ('$', '*')):
+                transMatrix.append([None for i in range(len(alphabet))])
+                newState = len(transMatrix) - 1
+                StateQueue.append(nextState)
+                nextState = newState
+            elif(op == ','):
+                StateQueue.append(nextState)                
+
             NodeStack.append(currNode.right)
             OpStack.append(currNode.data)
             currNode = currNode.left    
@@ -127,5 +125,5 @@ def printTransTable(Matrix, alphabet):
     for i in range(len(Matrix)):
         print(str(i) + str(Matrix[i]))
 
-regularExpressionToDFA_e('ab$c,')
+regularExpressionToDFA_e('abc$,')
 
