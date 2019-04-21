@@ -3,7 +3,7 @@
     Module 2: Transforms a regular expression in postfix 
               notation into a Non Deterministic Finite Automaton (NFA-e)
               In: Regular expression in Postfix notation.
-              Out: NFA-e transitions table  """ 
+              Out: NFA-e transitions table, alphabet, inital state, final state  """ 
 
 class Node:
     def __init__(self, data, left, right, parent):
@@ -25,6 +25,7 @@ def treeConverter(string,index,parent = None):
         return (index-1), N
     return newInd, N 
 
+""" Prints the tree representation of the regular expression """
 def printPostfix(root,space):
     print(space + root.data)
     if(root.left != None):
@@ -52,10 +53,10 @@ def regularExpressionToNFA_e(regExp):
     ind, RETreeRoot = treeConverter(regExp,len(regExp)-1)
     dropUnused(ind)
     transMatrix = [[[None] for i in range(len(alphabet))],[[None] for i in range(len(alphabet))]]
-
     createNFA(transMatrix, RETreeRoot, init_state, final_state, alphabet)
 
-    printTransTable(transMatrix, alphabet)    
+    printTransTable(transMatrix, alphabet)
+    return alphabet, transMatrix, init_state, final_state    
 
 def createNFA(transMatrix, currNode, currState, nextState, alphabet):
     if(currNode == 'eps'):
@@ -95,5 +96,5 @@ def printTransTable(Matrix, alphabet):
     for i in range(len(Matrix)):
         print(str(i) + '   ' + str(Matrix[i]))
 
-regularExpressionToNFA_e('ab,ab,c$$*')
+# regularExpressionToNFA_e('ab*$**')
 
