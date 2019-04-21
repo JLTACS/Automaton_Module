@@ -80,7 +80,7 @@ def createNFA(transMatrix, currNode, currState, nextState, alphabet):
         createNFA(transMatrix, 'eps', currState, len(transMatrix) - 1, alphabet)
         createNFA(transMatrix, 'eps', len(transMatrix) - 1, nextState, alphabet)
         createNFA(transMatrix, currNode.right, len(transMatrix) - 1, len(transMatrix) - 1, alphabet)
-    elif(currNode.data = '+'):
+    elif(currNode.data == '+'):
         pass
 
 def dropUnused(i):
