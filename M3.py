@@ -8,12 +8,36 @@
 import M2
 
 def NFAconverter(alphabet, transMatrix, initial_state, final_state):
-    newMatrix = transMatrix.copy()
+    newMatrix = [[[] for j in range(len(alphabet) - 1)] for i in range(len(transMatrix))]
     newFinals = set()
     newFinals.add(final_state)
     
     e_closure = set()
-    E_closure(transMatrix, initial_state, e_closure)
+
+    for currState in range(len(transMatrix)):
+        E_closure(transMatrix, currState, e_closure)
+        keys = list(alphabet.keys())
+        keys.remove('eps')
+        stateSet = set()
+        resultSet = set()
+
+        for k in keys:
+            for state in e_closure:
+                for j in range(len(transMatrix[state][alphabet[k]])):
+                    stateSet.add(transMatrix[state][alphabet[k]][j])
+        
+            for c in stateSet:
+                if c != None:
+                    E_closure(transMatrix, c, resultSet)
+            resultlist = list(resultSet)
+            for n in resultlist:
+                newMatrix[currState][alphabet[k]].append(n)
+            resultSet = set()       
+            stateSet = set()
+        e_closure = set()                                    
+    
+    M2.printTransTable(newMatrix, alphabet)
+
 
 def E_closure(transMatrix, currState, e_closure, e_index = 0):
     if(transMatrix[currState][-1][e_index] == None):
@@ -27,13 +51,14 @@ def E_closure(transMatrix, currState, e_closure, e_index = 0):
 
 
 e_closure = set()
-matrix =     [[[233], [1,2]],
-             [[100], [4]],
-             [[10],  [None]],
-             [[4], [None]],
-             [[None], [None]]]
+matrix =     [[[0], [None], [1]],
+             [[None], [None], [2]],
+             [[3], [2], [None]],
+             [[None], [None], [None]]]
 
-E_closure(matrix,0,e_closure)
-print(e_closure)
+alpha = {'a':0, 'b':1, 'eps':3}
+
+# E_closure(matrix,0,e_closure)
+# print(e_closure)
 # alphabet, transMatrix, init_state, final_state = M2.regularExpressionToNFA_e('ab*$**')
-# NFAconverter(alphabet, transMatrix, init_state, final_state)
+NFAconverter(alpha, matrix, 0, 3)
