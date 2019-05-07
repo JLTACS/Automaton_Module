@@ -8,7 +8,7 @@
               In: NFA transition table, final states
               Out:  DFA transition table, final states """
 
-def afdConverter(oldTransition, oldInitial, oldFinal):
+def afdConverter(oldTransition,  oldFinal):
     newStates = {}
     newFinals = set()
     newTransition = []
@@ -20,7 +20,7 @@ def afdConverter(oldTransition, oldInitial, oldFinal):
     newStates[lastNewState] = set([oldInitial])
 
     #Checar si estado inical se encuentra en los finales
-    if oldInitial in oldFinal:
+    if 0 in oldFinal:
         newFinals.add(lastNewState)
     
     st = 0
@@ -33,10 +33,10 @@ def afdConverter(oldTransition, oldInitial, oldFinal):
             tempSt = set()                                                  #Producir la union de la producción de los estados contenidos en el nuevo estado
             for q in oldSt:
                 tempList = oldTransition[q][alf]
-                if type(tempList) is int :
-                    tempList = [tempList]
-                elif tempList == None:
-                    tempList = []
+                # if type(tempList) is int :
+                #     tempList = [tempList]
+                # elif tempList == None:
+                #     tempList = []
                 tempSt = tempSt.union(set(tempList))
 
             if tempSt not in newStates.values():                                     #Revisar si el estado obtenido existe
@@ -57,7 +57,7 @@ afn = [[[0,1], 0, 0],
         [3,3,3]]
 
 
-final = set([3])
+
 
 afn2 = [[[0,2],1],
         [[1,2],2],
