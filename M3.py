@@ -39,7 +39,8 @@ def NFAconverter(alphabet, transMatrix, initial_state, final_state):
         e_closure = set()                                    
     
     alphabet.pop("eps")
-    M2.printTransTable(newMatrix, alphabet)
+    # M2.printTransTable(newMatrix, alphabet)
+    return newMatrix, newFinals
 
 
 def E_closure(transMatrix, currState, e_closure, e_index = 0):
