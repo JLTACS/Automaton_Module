@@ -17,7 +17,7 @@ def afdConverter(oldTransition,  oldFinal):
 
     #inicializar matriz y estados 
     newTransition.append([None]*alfSize)
-    newStates[lastNewState] = set([oldInitial])
+    newStates[lastNewState] = set([0])
 
     #Checar si estado inical se encuentra en los finales
     if 0 in oldFinal:
@@ -51,20 +51,7 @@ def afdConverter(oldTransition,  oldFinal):
     
     return newTransition, newFinals
 
-afn = [[[0,1], 0, 0],
-        [None, None, 2],
-        [None, 3, None],
-        [3,3,3]]
 
-
-
-
-afn2 = [[[0,2],1],
-        [[1,2],2],
-        [[0,2],None]]
-
-final2 = set([0])
-print(afdConverter(afn2,0,final2))
             
                 
 

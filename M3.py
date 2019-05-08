@@ -54,15 +54,15 @@ def E_closure(transMatrix, currState, e_closure, e_index = 0):
             E_closure(transMatrix, nextState, e_closure)    
 
 
-e_closure = set()
-matrix =     [[[0], [None], [1]],
-             [[None], [None], [2]],
-             [[3], [2], [None]],
-             [[None], [None], [None]]]
+# e_closure = set()
+# matrix =     [[[0], [None], [1]],
+#              [[None], [None], [2]],
+#              [[3], [2], [None]],
+#              [[None], [None], [None]]]
 
-alpha = {'a':0, 'b':1, 'eps':3}
+# alpha = {'a':0, 'b':1, 'eps':3}
 
 # E_closure(matrix,0,e_closure)
 # print(e_closure)
 # alphabet, transMatrix, init_state, final_state = M2.regularExpressionToNFA_e('ab*$**')
-NFAconverter(alpha, matrix, 0, 3)
+#NFAconverter(alpha, matrix, 0, 3)

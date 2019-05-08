@@ -14,7 +14,7 @@ def getCombinations(elements):
     return combinations
     
 
-def getEquivalentStates(oldTransition, oldFinal):
+def Minimize(oldTransition, oldFinal):
     nonFinal = set(range(len(oldTransition)))
     nonFinal = list(nonFinal.difference(oldFinal))
     final = list(oldFinal)
@@ -63,10 +63,3 @@ def getEquivalentStates(oldTransition, oldFinal):
     
     return oldTransition,oldFinal
     
-
-
-afd = [[1, 2], [1, 2], [3, 4], [5, 4], [1, 6], [5, 3], [6, 6]]
-finals = {0,1,5}
-
-
-print(getEquivalentStates(afd,finals))

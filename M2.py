@@ -38,8 +38,9 @@ def printPostfix(root,space):
 def create_alf_dict(str_alf):
     alf = {}
     str_alf = set(str_alf)
+    orden = sorted(str_alf)
     n = 0
-    for letter in str_alf:
+    for letter in orden:
         if(letter not in ('*', '+', ',', '$')):
             alf[letter] = n
             n += 1
@@ -55,7 +56,7 @@ def regularExpressionToNFA_e(regExp):
     transMatrix = [[[None] for i in range(len(alphabet))],[[None] for i in range(len(alphabet))]]
     createNFA(transMatrix, RETreeRoot, init_state, final_state, alphabet)
 
-    printTransTable(transMatrix, alphabet)
+#    printTransTable(transMatrix, alphabet)
     return alphabet, transMatrix, init_state, final_state    
 
 def createNFA(transMatrix, currNode, currState, nextState, alphabet):
