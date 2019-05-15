@@ -15,7 +15,10 @@ class Node:
 """ Constructs the tree representation of a
     regular expression in postfix notation.  """
 def treeConverter(string,index,parent = None):
-    N = Node(string[index],None,None,parent)
+    if string[index] == '?':
+        N = Node('eps',None,None,parent)
+    else:
+        N = Node(string[index],None,None,parent)
     if(string[index] in ('$',',')):
         newInd, N.right = treeConverter(string, index-1,N) 
         newInd, N.left = treeConverter(string, newInd, N)
@@ -72,16 +75,18 @@ def createNFA(transMatrix, currNode, currState, nextState, alphabet):
         return
     elif(currNode.data == '$'):
         transMatrix.append([[None] for i in range(len(alphabet))])
-        createNFA(transMatrix, currNode.left, currState, len(transMatrix) - 1, alphabet)
-        createNFA(transMatrix, currNode.right, len(transMatrix) - 1, nextState, alphabet)
+        new_state = len(transMatrix) - 1
+        createNFA(transMatrix, currNode.left, currState, new_state, alphabet)
+        createNFA(transMatrix, currNode.right, new_state, nextState, alphabet)
     elif(currNode.data == ','):
         createNFA(transMatrix, currNode.left, currState, nextState, alphabet)
         createNFA(transMatrix, currNode.right, currState, nextState, alphabet)
     elif(currNode.data == '*'):
         transMatrix.append([[None] for i in range(len(alphabet))])
-        createNFA(transMatrix, 'eps', currState, len(transMatrix) - 1, alphabet)
-        createNFA(transMatrix, 'eps', len(transMatrix) - 1, nextState, alphabet)
-        createNFA(transMatrix, currNode.right, len(transMatrix) - 1, len(transMatrix) - 1, alphabet)
+        new_state = len(transMatrix) - 1
+        createNFA(transMatrix, 'eps', currState, new_state, alphabet)
+        createNFA(transMatrix, 'eps', new_state, nextState, alphabet)
+        createNFA(transMatrix, currNode.right, new_state, new_state, alphabet)
     elif(currNode.data == '+'):
         createNFA(transMatrix, currNode.right, currState, nextState, alphabet)
         createNFA(transMatrix, 'eps', nextState, currState, alphabet)

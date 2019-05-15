@@ -16,6 +16,8 @@ def NFAconverter(alphabet, transMatrix, initial_state, final_state):
 
     for currState in range(len(transMatrix)):
         E_closure(transMatrix, currState, e_closure)
+        if(not newFinals.isdisjoint(e_closure)):
+                        newFinals.add(currState)
         keys = list(alphabet.keys())
         keys.remove('eps')
         stateSet = set()
@@ -29,8 +31,8 @@ def NFAconverter(alphabet, transMatrix, initial_state, final_state):
             for c in stateSet:
                 if c != None:
                     E_closure(transMatrix, c, resultSet)
-                    if(not newFinals.isdisjoint(resultSet)):
-                        newFinals.add(currState)
+                    # if(not newFinals.isdisjoint(resultSet)):
+                    #     newFinals.add(currState)
             resultlist = list(resultSet)
             for n in resultlist:
                 newMatrix[currState][alphabet[k]].append(n)
@@ -40,7 +42,7 @@ def NFAconverter(alphabet, transMatrix, initial_state, final_state):
     
     alphabet.pop("eps")
     # M2.printTransTable(newMatrix, alphabet)
-    return newMatrix, newFinals
+    return newMatrix, newFinals, alphabet
 
 
 def E_closure(transMatrix, currState, e_closure, e_index = 0):

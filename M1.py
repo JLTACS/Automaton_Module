@@ -70,7 +70,7 @@ def createAcceptedChars():
     chars = [chr(i) for i in range(ord('A'),  ord('Z') + 1)]
     chars += [chr(i) for i in range(ord('a'), ord('z') + 1)]
     chars += [chr(i) for i in range(ord('0'), ord('9') + 1)]
-    chars += ['\n', ' ', 'á', 'é', 'í', 'ó', 'ú', '&']
+    chars += ['\n', ' ', 'á', 'é', 'í', 'ó', 'ú', '&','?']
     return chars
 
 """ Sets Operators priority """
