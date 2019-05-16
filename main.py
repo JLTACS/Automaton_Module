@@ -6,7 +6,7 @@ import M5
 import M6
 
 print("----M1------")
-exp = "(padre,?)wwwcom"
+exp = "padre&*&*"
 pos_exp = M1.postfixNotation(exp)
 print(pos_exp)
 print("\n")

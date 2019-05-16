@@ -44,7 +44,7 @@ def create_alf_dict(str_alf):
     orden = sorted(str_alf)
     n = 0
     for letter in orden:
-        if(letter not in ('*', '+', ',', '$')):
+        if(letter not in ('*', '+', ',', '$','?')):
             alf[letter] = n
             n += 1
     alf['eps'] = n
