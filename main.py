@@ -29,13 +29,13 @@ class Gui():
         self.load = tk.Text(self.root, height = 12, width = 30, bg=self.defaultbg, state='disabled')
         self.et3 = tk.Label(self.root,text = "Palabras Encontradas:",font='Arial 10 bold')
         self.finds = tk.Text(self.root, height = 35, width = 68, state='disabled')
+        self.bttn4 = tk.Button(self.root, text = "Guardar Encontrados", command = self.saveResults)
 
 
         self.frame.grid(column = 0, row = 0)
         self.et1.place(x=50,y=30)
         self.reg_entry.place(x=50,y=50)
         self.bttn1.place(x=200,y=50)
-
         self.et2.place(x=50,y=90)
         self.file_entry.place(x=50,y=110)
         self.bttn2.place(x=200,y=110)
@@ -43,6 +43,7 @@ class Gui():
         self.load.place(x=50, y = 220)
         self.et3.place(x = 280, y = 30)
         self.finds.place(x = 280, y = 50)
+        self.bttn4.place(x = 600, y=450)
         
     def start(self):
         self.root.mainloop()
@@ -59,6 +60,13 @@ class Gui():
         filename = filedialog.askopenfilename(initialdir = "/",title = "Seleccione un Archivo",filetypes = (("text files","*.txt"),("all files","*.*")))
         self.file_entry.delete(0, tk.END)
         self.file_entry.insert(0, filename)
+    
+    def saveResults(self):
+        filename = filedialog.asksaveasfilename(initialdir = "/",title = "Guardar como")
+        f = open(filename, 'w')
+        rs = self.finds.get("1.0", tk.END)
+        f.write(rs)
+        f.close()
     
     def getProcess(self, function):
         self.process = function
@@ -137,34 +145,34 @@ if __name__ == '__main__':
 
 
 
-print("----M1------")
-exp = "padre&*&*"
-pos_exp = M1.postfixNotation(exp)
-print(pos_exp)
-print("\n")
+# print("----M1------")
+# exp = "padre&*&*"
+# pos_exp = M1.postfixNotation(exp)
+# print(pos_exp)
+# print("\n")
 
-print("----M2------")
-alf, matriz_Trans, init_st, final_st = M2.regularExpressionToNFA_e(pos_exp)
-M2.printTransTable(matriz_Trans,alf)
-print("\n")
+# print("----M2------")
+# alf, matriz_Trans, init_st, final_st = M2.regularExpressionToNFA_e(pos_exp)
+# M2.printTransTable(matriz_Trans,alf)
+# print("\n")
 
-print("----M3------")
-matriz_Trans, final_st, alf = M3.NFAconverter(alf,matriz_Trans,init_st,final_st)
-M2.printTransTable(matriz_Trans, alf)
-print("\n")
+# print("----M3------")
+# matriz_Trans, final_st, alf = M3.NFAconverter(alf,matriz_Trans,init_st,final_st)
+# M2.printTransTable(matriz_Trans, alf)
+# print("\n")
 
-print("----M4------")
-matriz_Trans, final_st = M4.afdConverter(matriz_Trans, final_st)
-M2.printTransTable(matriz_Trans, alf)
-print("\n")
+# print("----M4------")
+# matriz_Trans, final_st = M4.afdConverter(matriz_Trans, final_st)
+# M2.printTransTable(matriz_Trans, alf)
+# print("\n")
 
-print("----M5------")
-matriz_Trans, final_st =  M5.Minimize(matriz_Trans, final_st)
-M2.printTransTable(matriz_Trans, alf)
-print("\n")
+# print("----M5------")
+# matriz_Trans, final_st =  M5.Minimize(matriz_Trans, final_st)
+# M2.printTransTable(matriz_Trans, alf)
+# print("\n")
 
-print("----M6------")
-f = open("input.txt",'r')
-M6.parse(matriz_Trans,final_st,f,alf)
-f.close()
-print("\n")
+# print("----M6------")
+# f = open("input.txt",'r')
+# M6.parse(matriz_Trans,final_st,f,alf)
+# f.close()
+# print("\n")
