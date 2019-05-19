@@ -1,5 +1,6 @@
 import tkinter as tk 
 from tkinter import filedialog
+from tkinter import messagebox
 import M1
 import M2
 import M3
@@ -70,16 +71,28 @@ class Gui():
     
     def getProcess(self, function):
         self.process = function
+    
+    def errorMess(self, error_message):
+        messagebox.showerror("Error", error_message)
+    
+
+
 
 def automaton(automat):
     #automat = Gui()
     index = 1.0
 
     automat.load.config(state='normal')
+    automat.load.delete("1.0",tk.END)
     automat.load.insert(str(index),"Inicializando...\n")
     index+=1
     exp = automat.reg_entry.get()
+    automat.load.delete("1.0",tk.END)
     automat.load.config(state='disabled')
+    if exp == "":
+        #automat.root.withdraw()
+        automat.errorMess("Ingrese expresión regular!")
+        return
     
     automat.load.config(state='normal')
     automat.load.insert(str(index),"Convirtiendo a posfijo...\n")
@@ -115,6 +128,10 @@ def automaton(automat):
     automat.load.insert(str(index),"Parsing...\n")
     index+=1
     file = automat.file_entry.get()
+    if file == "":
+        automat.errorMess("Ingrese archivo de entrada!")
+        automat.load.delete("1.0",tk.END)
+        return
     f = open(file, 'r')
     M6.parse(matriz_Trans,final_st,f,alf)
     f.close()
