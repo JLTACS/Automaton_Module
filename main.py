@@ -28,10 +28,11 @@ class Gui():
         self.bttn3 = tk.Button(self.root,text = "Start", command = lambda: self.process(self))
 
         self.load = tk.Text(self.root, height = 12, width = 30, bg=self.defaultbg, state='disabled')
-        self.et3 = tk.Label(self.root,text = "Palabras Encontradas:",font='Arial 10 bold')
+        self.et3 = tk.Label(self.root,text = "Expresiones Encontradas:",font='Arial 10 bold')
         self.finds = tk.Text(self.root, height = 35, width = 68, state='disabled')
         self.bttn4 = tk.Button(self.root, text = "Guardar Encontrados", command = self.saveResults)
-
+        
+        self.bttn5 = tk.Button(self.root, text = "?", command = self.helpMe)
 
         self.frame.grid(column = 0, row = 0)
         self.et1.place(x=50,y=30)
@@ -45,7 +46,8 @@ class Gui():
         self.et3.place(x = 280, y = 30)
         self.finds.place(x = 280, y = 50)
         self.bttn4.place(x = 600, y=450)
-        
+        self.bttn5.place(x = 725, y = 20)
+
     def start(self):
         self.root.mainloop()
 
@@ -75,6 +77,26 @@ class Gui():
     def errorMess(self, error_message):
         messagebox.showerror("Error", error_message)
     
+    def helpMe(self):
+        help_window = tk.Toplevel(self.root)
+        help_window.title("Ayuda")
+        help_window.resizable(0,0)
+        lb_frame = tk.LabelFrame(help_window, text = "Instrucciones", height = 400, width = 500)
+        # scroll = tk.Scrollbar(help_window)
+        # scroll.place(x = 10, y = 350)
+        inst = tk.Text(help_window, height = 33, width = 65, bg=self.defaultbg, state='normal')
+        
+        lb_frame.grid(column = 0, row = 0)
+        inst.place(x=5,y=15)
+        #scroll.config( command = inst.xview )
+
+        f = open("instrucciones.txt",'r')
+        index = 1.0
+        for rd in f:
+            inst.insert(str(index),rd)
+            index += 1
+        f.close()
+        inst.config(state='disabled')
 
 
 
