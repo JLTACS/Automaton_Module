@@ -1,6 +1,7 @@
 import tkinter as tk 
 from tkinter import filedialog
 from tkinter import messagebox
+from tkinter import scrolledtext as st
 import M1
 import M2
 import M3
@@ -33,6 +34,7 @@ class Gui():
         self.bttn4 = tk.Button(self.root, text = "Guardar Encontrados", command = self.saveResults)
         
         self.bttn5 = tk.Button(self.root, text = "?", command = self.helpMe)
+        self.bttn6 = tk.Button(self.root, text = "Ver Proceso", state = 'disabled', command = self.showProcess)
 
         self.frame.grid(column = 0, row = 0)
         self.et1.place(x=50,y=30)
@@ -47,6 +49,7 @@ class Gui():
         self.finds.place(x = 280, y = 50)
         self.bttn4.place(x = 600, y=450)
         self.bttn5.place(x = 725, y = 20)
+        self.bttn6.place(x = 100, y = 365)
 
     def start(self):
         self.root.mainloop()
@@ -97,11 +100,58 @@ class Gui():
             index += 1
         f.close()
         inst.config(state='disabled')
+    
+    def writeTransTable(self,Matrix, alphabet):
+
+        keys = list(alphabet.keys())
+        title = "\t"
+        for k in keys:
+            title += k + '\t'
+        
+        mat = ''
+        for i in range(len(Matrix)):
+            mat += (str(i) + '   ' + str(Matrix[i]) + '\n')
+        
+        return title, mat
+    
+    def showProcess(self):
+        show_window = tk.Toplevel(self.root)
+        show_window.title('Proceso')
+        #show_window.resizable(0,0)
+        frame = tk.Frame(show_window)
+        xscrollbar = tk.Scrollbar(frame, orient=tk.HORIZONTAL)
+        pross = st.ScrolledText(frame, xscrollcommand = xscrollbar.set, width = 50, state='normal')
+        bttn = tk.Button(frame, text = "Guardar Proceso", command = self.saveResults)
+
+        # frame.grid(column = 0, row = 0,  sticky = tk.NSEW)
+        # pross.grid(column = 0, row =0, sticky = tk.NSEW)
+        # xscrollbar.grid(row=1, column=0, sticky = tk.NSEW)
+        # bttn.grid(row = 2, column = 0)
+
+
+        frame.pack(fill = tk.BOTH, expand = tk.YES)
+        pross.pack(fill = tk.BOTH, expand = tk.YES)
+        xscrollbar.pack(fill = tk.X)
+        bttn.pack(pady = 10, padx = 10)
+
+        # frame.columnconfigure(0, weight = 1)
+        # frame.rowconfigure(0, weight = 1)
+
+        f = open("temp_proc.txt", 'r')
+        index = 1.0
+        for rd in f:
+            pross.insert(str(index),rd)
+            index += 1
+        f.close()
+        pross.config(state='disabled')
+
+
 
 
 
 def automaton(automat):
     #automat = Gui()
+    wr = ''
     index = 1.0
 
     automat.load.config(state='normal')
@@ -112,38 +162,52 @@ def automaton(automat):
     automat.load.delete("1.0",tk.END)
     automat.load.config(state='disabled')
     if exp == "":
-        #automat.root.withdraw()
         automat.errorMess("Ingrese expresión regular!")
         return
+    wr += ("Expresión Regular: " + exp + '\n')
     
+    wr += '\n----------M1----------\n'
     automat.load.config(state='normal')
     automat.load.insert(str(index),"Convirtiendo a posfijo...\n")
     index+=1
     pos_exp = M1.postfixNotation(exp)
+    wr += ("Expresión posfija: " + pos_exp + '\n')
     automat.load.config(state='disabled')
 
+    wr += '\n----------M2 AFN-Epsilon----------\n'
     automat.load.config(state='normal')
     automat.load.insert(str(index),"Creando AFN...\n")
     index+=1
     alf, matriz_Trans, init_st, final_st = M2.regularExpressionToNFA_e(pos_exp)
+    tl, mt = automat.writeTransTable(matriz_Trans,alf)
+    wr += (tl + '\n' + mt + '\n')
     automat.load.config(state='disabled')
 
+    wr += '\n----------M3 AFN----------\n'
     automat.load.config(state='normal')
     automat.load.insert(str(index),"Eliminando epsilon transiciones...\n")
     index+=1
     matriz_Trans, final_st, alf = M3.NFAconverter(alf,matriz_Trans,init_st,final_st)
+    tl, mt = automat.writeTransTable(matriz_Trans, alf)
+    wr += (tl + '\n' + mt + '\n')
     automat.load.config(state='disabled')
 
+    wr += '\n----------M4 AFD----------\n'
     automat.load.config(state='normal')
     automat.load.insert(str(index),"Convirtiendo AFN a AFD...\n")
     index+=1
     matriz_Trans, final_st = M4.afdConverter(matriz_Trans, final_st)
+    tl, mt = automat.writeTransTable(matriz_Trans, alf)
+    wr += (tl + '\n' + mt + '\n')
     automat.load.config(state='disabled')
 
+    wr += '\n----------M5 AFD Minimizado----------\n'
     automat.load.config(state='normal')
     automat.load.insert(str(index),"Minimizando AFD...\n")
     index+=1
     matriz_Trans, final_st =  M5.Minimize(matriz_Trans, final_st)
+    tl, mt = automat.writeTransTable(matriz_Trans, alf)
+    wr += (tl + '\n' + mt + '\n')
     automat.load.config(state='disabled')
 
     automat.load.config(state='normal')
@@ -166,10 +230,16 @@ def automaton(automat):
         automat.finds.insert(str(ind),rs)
         ind+=1
     automat.finds.config(state='disabled')
+    f.close()
+
     automat.load.config(state='normal')
     automat.load.insert(str(index),"Finish\n")
     automat.load.config(state='disabled')
-    
+
+    f = open("temp_proc.txt", 'w')
+    f.write(wr)
+    f.close()
+    automat.bttn6.config(state = 'normal')
 
 
 def main():

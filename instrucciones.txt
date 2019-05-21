@@ -1,0 +1,24 @@
+1. Escriba la expresión regular en la caja indicada o seleccione un archivo.
+    Los caracteres aceptados son:
+        A - Z
+        a - z 
+        0 - 9 
+        á, é, í, ó, ú
+        Parentesis ()
+        & : Indica cualquier simbolo dentro del alfabeto
+
+        Operaciones
+        - Concatenación: $ (puede ser emitido)
+        - Operador or: ,
+        - Cerradura de Kleene: *
+        - Cerradura positiva: + 
+
+        Epsilón: ?
+
+2. Escriba la dirección del archivo de entrada en la caja indicada o seleccione el archivo.
+
+3. La caja gris de abajo indicara las etapas del proceso.
+
+4. Las expresiones encontradas se escribiran en la caja del lado derecho.
+
+5. Puede guardar el resultado con el boton de guardar en la parte inferior derecha de la ventana.
